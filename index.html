@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube</title>
+    <!-- Styles -->
+    <link rel="stylesheet" href="./style.css">
+    <!-- Google fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
+    <!-- Font awesome -->
+    <script src="https://kit.fontawesome.com/e920becf4e.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav id="navbar" class="inner-divs">
+        <!-- Nav Left -->
+        <div class="nav-left">
+            <div class="yt-icon">
+                <span class="material-icons-outlined">menu</span>
+                <a href="./index.html">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="">
+                    <h3 class="yt">YouTube</h3>
+                </a>
+            </div>
+            <div class="country">
+                <p>IN</p>
+            </div>
+        </div>
+        <!-- Nav Middle -->
+        <div class="nav-middle">
+            <div class="search-box">
+                <input type="text" class="search" placeholder="Search">
+                <span onclick="searchVideos()" id="search" class="material-icons-outlined">search</span>
+            </div>
+            <div class="mic">
+                <span onclick="" class="material-icons-outlined">mic</span>
+            </div>
+        </div>
+        <!-- Nav Right -->
+        <div class="nav-right">
+            <div class="icons">
+                <img src="./upload.png" alt="">
+                <span class="material-icons-outlined">apps</span>
+                <span class="material-icons-outlined">notifications</span>
+                <img src="https://m.media-amazon.com/images/M/MV5BMjEwNjE5MTg1N15BMl5BanBnXkFtZTgwODM1NDgwNjE@._V1_.jpg" alt="mail-icon">
+            </div>
+        </div>
+    </nav>
+    <!-- Left Side Bar -->
+    <div class="sidebar">
+        <div class="short-links">
+            <a href=""><span class="material-icons-outlined">home</span><p>Home</p></a>
+            <a href=""><span class="material-icons-outlined">explore</span><p>Explore</p></a>
+            <a href=""><span class="material-icons-outlined">youtube_searched_for</span><p>Shorts</p></a>
+            <a href=""><span class="material-icons-outlined">subscriptions</span><p>Subscriptions</p></a>
+            <hr>
+            <a href=""><span class="material-icons-outlined">video_library</span><p>Library</p></a>
+            <a href=""><span class="material-icons-outlined">history</span><p>History</p></a>
+            <a href=""><span class="material-icons-outlined">smart_display</span><p>Your Videos</p></a>
+            <a href=""><span class="material-icons-outlined">watch_later</span><p>Watch Later</p></a>
+            <a href=""><span class="material-icons-outlined">thumb_up_alt</span><p>Liked Videos</p></a>
+            <a href=""><span class="material-icons-outlined">expand_more</span><p>Show More</p></a>
+            <hr>
+        </div>
+        <div class="subscribed-list">
+            <h3>SUBSCRIPTIONS</h3>
+            <a href=""><img src="./images/Jack.png" alt="">
+                <p>Jack Sparrow</p>
+            </a>
+            <a href=""><img src="./images/simon.png" alt="">
+                <p>Jack Sparrow</p>
+            </a>
+            <a href=""><img src="./images/tom.png" alt="">
+                <p>Jack Sparrow</p>
+            </a>
+            <a href=""><img src="./images/megan.png" alt="">
+                <p>Megan Foxx</p>
+            </a>
+            <a href=""><img src="./images/cameron.png" alt="">
+                <p>Jack Sparrow</p>
+            </a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="banner">
+            <img src="./images/banner.png" alt="">
+        </div>
+    </div>
+    <div class="yt-videos">
+
+    </div>
+</body>
+
+</html>
+
+<script>
+    const search_results_div = document.querySelector(".yt-videos");
+
+    const homePage = async() => {
+        try {
+            search_results_div.innerHTML = null;
+            let API_KEY = `AIzaSyBPJ-HbiXxX4RyeX21SjbvXrEvhuq81U8I`;
+            let your_search = `Bharat`;
+            let url = `https://youtube.googleapis.com/youtube/v3/search?order=videoCount&part=snippet&q=${your_search}&maxResults=40&type=video&key=${API_KEY}`;
+            let res = await fetch(url);
+            let data = await res.json();
+            let videos = data.items;
+            console.log("videos", videos);
+            appendVideos(videos);
+            return videos;
+        } catch (error) {
+            console.log("Error", error);
+        }
+    }
+    homePage();
+
+    const searchVideos = async() => {
+        try {
+            search_results_div.innerHTML = null;
+            let API_KEY = `AIzaSyBPJ-HbiXxX4RyeX21SjbvXrEvhuq81U8I`;
+            let your_search = document.querySelector(".search").value;
+            let url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=80&q=${your_search}&key=${API_KEY}`;
+            let res = await fetch(url);
+            let data = await res.json();
+            let videos = data.items;
+            // console.log("videos", videos);
+            appendVideos(videos)
+            return videos;
+        } catch (error) {
+            console.log("Error", error);
+        }
+    }
+
+    const appendVideos = (videos) => {
+
+        videos.forEach((el) => {
+            let div = document.createElement("div");
+            div.setAttribute("class", "video");
+
+            let title = document.createElement("p");
+            title.innerText = el.snippet.title;
+
+            let iframe = document.createElement("iframe");
+            iframe.src = `https://www.youtube.com/embed/${el.id.videoId}`;
+
+            let img = document.createElement("img");
+            img.src = el.snippet.thumbnails.high.url;
+            img.onclick = function() {
+                window.location = "./videoPlay.html";
+                var video_item = [];
+                video_item.push(el);
+                localStorage.setItem("video_item", JSON.stringify(video_item));
+            }
+            div.append(img, title);
+            search_results_div.append(div);
+        });
+        // localStorage.setItem("videos",JSON.stringify(videos));
+    }
+    const menuIcon = document.querySelector(".material-icons-outlined");
+    const sidebar = document.querySelector(".sidebar");
+    const ytVideos = document.querySelector(".yt-videos");
+
+    menuIcon.onclick = function() {
+        sidebar.classList.toggle("small-sidebar");
+        ytVideos.classList.toggle("new-yt-videos");
+    }
+</script>
+
+
+<!-- GET https://youtube.googleapis.com/youtube/v3/search?part=snippet&order=videoCount&key=[YOUR_API_KEY] -->
+
+
+
+<!-- https://youtube.googleapis.com/youtube/v3/search?location=India&order=videoCount&key=[YOUR_API_KEY] -->

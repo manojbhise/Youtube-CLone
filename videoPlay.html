@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/e920becf4e.js" crossorigin="anonymous"></script>
+    <style>
+        .videoPlay {}
+        /* .videoPlay iframe {
+            width: 560px;
+            height: 315px;
+        } */
+    </style>
+</head>
+
+<body>
+    <div class="videoPlay">
+        <iframe class="videoPlay-iframe" width="560" height="315" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+</body>
+
+</html>
+<script>
+    const video_item = JSON.parse(localStorage.getItem("video_item"));
+
+    const video_play = document.querySelector(".videoPlay-iframe");
+    video_play.src = `https://www.youtube.com/embed/${video_item[0].id.videoId}`;
+
+    // video_play.append(iframe);
+    console.log(video_item);
+    console.log(video_item[0].id.videoId);
+</script>
